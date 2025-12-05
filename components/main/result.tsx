@@ -1,4 +1,4 @@
-export default function Result(){
+export default function Relust({passwords} : {passwords: string}){
     return(
         <>
             ddd
