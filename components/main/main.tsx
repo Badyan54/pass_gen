@@ -7,21 +7,36 @@ import Options from "./options"
 
 export default function Main(){
     const [inputValue, setInputValue] = useState('')
-    const [selctedOptions, setSelectedOptions] = useState<string[]>([])
+    const [selctedOptions, setSelectedOptions] = useState<string[]>(["abcdefghijklmnopqrstuvwxyz"])
+    const [length, setLength] = useState<number>(10)
 
     function toggleOption(option: string){
-        setSelectedOptions( prev =>
-            prev.includes(option)
-            ? prev.filter( o => o !== option)
-            : [...prev, option]
-        )
+        setSelectedOptions(prev => {
+            const isSelected = prev.includes(option) 
+            if (prev.length === 1 && isSelected) return prev // не можна вимкнути всі опції
+            return isSelected
+            ? prev.filter(o => o !== option)
+            : [...prev, option];
+        }
+        );
     }
     function handleChange(event: React.ChangeEvent<HTMLInputElement>){
         setInputValue(event.target.value)
     }
+    function handleLength(event: React.ChangeEvent<HTMLInputElement>){
+        setLength(Number(event.target.value))
+    }
 
-    function genPass(){
-        
+    function genPass(): void{
+        let genData = ''
+        for (let option of selctedOptions){
+            genData += option
+        }
+        let password = ''
+        for (let i = 0; i < length; i++){
+            password += genData[Math.floor(Math.random() * genData.length)];
+        }
+        setInputValue(password)
     }
 
     return(
@@ -30,9 +45,14 @@ export default function Main(){
                 <InputLetter value={inputValue} handleChange={handleChange} handleClick={genPass}/>
             </div>
             <div className="row-span-2 p-20">
-                <Options selctedOptions={selctedOptions} toggleOption={toggleOption}/>
+                <Options
+                selctedOptions={selctedOptions}
+                toggleOption={toggleOption}
+                length={length}
+                handleLenght={handleLength}
+                />
             </div>
-            <div className="h bg-red-very-ligth">
+            <div className="h ">
                 <Result passwords=""/>
             </div>
         </main>
