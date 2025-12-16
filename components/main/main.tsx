@@ -9,6 +9,7 @@ export default function Main(){
     const [inputValue, setInputValue] = useState('')
     const [selctedOptions, setSelectedOptions] = useState<string[]>(["abcdefghijklmnopqrstuvwxyz"])
     const [length, setLength] = useState<number>(10)
+    const [strenght, setStrenght] = useState<number>(0)
 
     function toggleOption(option: string){
         setSelectedOptions(prev => {
@@ -22,6 +23,7 @@ export default function Main(){
     }
     function handleChange(event: React.ChangeEvent<HTMLInputElement>){
         setInputValue(event.target.value)
+        setStrenght(howStrengthPass(event.target.value))
     }
     function handleLength(event: React.ChangeEvent<HTMLInputElement>){
         setLength(Number(event.target.value))
@@ -37,6 +39,19 @@ export default function Main(){
             password += genData[Math.floor(Math.random() * genData.length)];
         }
         setInputValue(password)
+        setStrenght(howStrengthPass(password))
+    }
+
+    function howStrengthPass(pass: string): number{
+        // по selectedOptions пройтися не варант бо user може сам щось воводитию 
+        let score = 0
+        if (pass.length > 7) score++
+        if (pass.length > 12) score++
+        if (/[a-z]/.test(pass)) score++;
+        if (/[A-Z]/.test(pass)) score++;
+        if (/\d/.test(pass)) score++;
+        if (/[!@#$%^&*]/.test(pass)) score++;
+        return score
     }
 
     return(
@@ -53,6 +68,7 @@ export default function Main(){
                 />
             </div>
             <div className="h ">
+                {strenght}
                 <Result passwords=""/>
             </div>
         </main>
